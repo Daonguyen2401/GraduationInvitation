@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label"
 import { GraduationCap, Download, Globe, ChevronLeft } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { MultiImageCarousel } from "@/components/multi-image-carousel"
-import { GraduationHeader } from "@/components/graduation-header"
 import { getBackgroundImages } from "@/lib/image-utils"
 
 interface FormData {
@@ -33,7 +32,7 @@ const translations = {
     graduationParty: "LỄ TỐT NGHIỆP",
     inHonorOf: "VINH DANH",
     graduateName: "NGUYỄN VĂN A",
-    university: "TRƯỜNG ĐẠI HỌC BÁCH KHOA TP.HCM",
+    university: "TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI",
     sunday: "CHỦ NHẬT",
     december: "THÁNG 12",
     timeRange: "9:30 SÁNG ĐẾN 12:00 TRƯA",
@@ -43,6 +42,8 @@ const translations = {
     pleaseConfirm: "VUI LÒNG XÁC NHẬN THAM DỰ BÊN DƯỚI",
     confirmAttendance: "Xác nhận tham dự",
     fillInfo: "Vui lòng điền thông tin để nhận thiệp mời cá nhân",
+    gratitudeQuote: "Cảm ơn gia đình, thầy cô và bạn bè đã đồng hành cùng tôi trong suốt chặng đường học tập. Nhờ có sự ủng hộ và động viên của mọi người, tôi mới có thể đạt được thành tựu ngày hôm nay. Tôi rất mong được chia sẻ khoảnh khắc đặc biệt này cùng tất cả mọi người!",
+    gratitudeQuoteEn: "Thank you to my family, teachers, and friends who have accompanied me throughout my learning journey. Thanks to everyone's support and encouragement, I was able to achieve today's success. I would be honored to share this special moment with all of you!",
     fullName: "Họ và tên",
     fullNamePlaceholder: "Nhập họ và tên đầy đủ",
     nickname: "Tên tôi thường gọi bạn",
@@ -83,7 +84,7 @@ const translations = {
     graduationParty: "GRADUATION PARTY",
     inHonorOf: "IN HONOR OF",
     graduateName: "NGUYEN VAN A",
-    university: "HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY",
+    university: "HANOI UNIVERSITY OF SCIENCE AND TECHNOLOGY",
     sunday: "SUNDAY",
     december: "DECEMBER",
     timeRange: "9:30 AM TO 12:00 PM",
@@ -93,6 +94,8 @@ const translations = {
     pleaseConfirm: "PLEASE CONFIRM YOUR ATTENDANCE BELOW",
     confirmAttendance: "Confirm Attendance",
     fillInfo: "Please fill in your information to receive a personalized invitation",
+    gratitudeQuote: "Cảm ơn gia đình, thầy cô và bạn bè đã đồng hành cùng tôi trong suốt chặng đường học tập. Nhờ có sự ủng hộ và động viên của mọi người, tôi mới có thể đạt được thành tựu ngày hôm nay. Tôi rất mong được chia sẻ khoảnh khắc đặc biệt này cùng tất cả mọi người!",
+    gratitudeQuoteEn: "Thank you to my family, teachers, and friends who have accompanied me throughout my learning journey. Thanks to everyone's support and encouragement, I was able to achieve today's success. I would be honored to share this special moment with all of you!",
     fullName: "Full Name",
     fullNamePlaceholder: "Enter your full name",
     nickname: "What I usually call you",
@@ -316,17 +319,8 @@ export default function GraduationInvitation() {
         className="fixed inset-0 z-0"
       />
       
-      {/* Graduation Header */}
-      <GraduationHeader
-        graduateName={t.graduateName}
-        university={t.university}
-        graduationTitle={t.graduationTitle}
-        universityLogo="/images/industry/education.png"
-        className="fixed top-0 left-0 right-0 z-30"
-      />
-      
       {/* Main Content Overlay */}
-      <div className="fixed inset-0 flex items-center justify-center z-20 pt-20">
+      <div className="fixed inset-0 flex items-center justify-center z-20">
         <div className="max-w-4xl mx-auto text-center px-4">
           {/* Main Graduation Text */}
           <div className="flex flex-col items-center justify-center">
@@ -358,12 +352,38 @@ export default function GraduationInvitation() {
         </Button>
       </div>
 
+      {/* Gratitude Quote Section */}
+      <section className="py-8 px-4 bg-muted/30 relative z-30">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20">
+            <div className="mb-4">
+              <GraduationCap className="w-12 h-12 mx-auto text-primary mb-2" />
+              <h2 className="text-3xl font-bold text-primary mb-4">
+                {language === "vi" ? "Lời Cảm Ơn" : "Words of Gratitude"}
+              </h2>
+            </div>
+            <blockquote className="text-xl leading-relaxed text-gray-700 italic mb-4">
+              "{language === "vi" ? t.gratitudeQuote : t.gratitudeQuoteEn}"
+            </blockquote>
+            <div className="text-sm text-gray-500">
+              {language === "vi" ? "— Trần Đức Đào Nguyên" : "— Tran Duc Dao Nguyen"}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Event Details Section */}
       <section id="main-content" className="py-16 px-4 bg-muted/30 relative z-30">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-12 text-center border">
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-12 text-center border border-white/20">
             <div className="mb-6">
-              <GraduationCap className="w-12 h-12 mx-auto text-primary" />
+              <div className="w-24 h-24 mx-auto rounded-lg overflow-hidden bg-white shadow-md">
+                <img
+                  src="/R.png"
+                  alt="HUST Logo"
+                  className="w-full h-full object-contain p-3"
+                />
+              </div>
             </div>
             <div className="mb-8">
               <p className="text-2xl font-light text-gray-600 italic mb-2">class of</p>
