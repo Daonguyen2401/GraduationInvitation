@@ -70,6 +70,11 @@ const translations = {
     message1: "Tôi rất hạnh phúc được chia sẻ khoảnh khắc đặc biệt này với bạn.",
     message2: "Cảm ơn bạn đã đồng hành cùng tôi trong hành trình học tập.",
     message3: "Hãy đến và cùng tôi tạo nên những kỷ niệm đẹp nhé!",
+    contactInfo: "Thông tin liên hệ",
+    contactName: "Trần Đức Đào Nguyên",
+    contactPhone: "0906605877",
+    contactEmail: "tranducdaonguyen@gmail.com",
+    contactFacebook: "Facebook: Trần Đức Đào Nguyên",
     copyright: "© 2025 Class of 2025 Graduation Celebration. Made with ❤️",
     fillAllFields: "Vui lòng điền đầy đủ thông tin",
     requiredFields: "Họ tên, email và giờ tham dự là bắt buộc.",
@@ -125,6 +130,11 @@ const translations = {
     message1: "I am very happy to share this special moment with you.",
     message2: "Thank you for accompanying me on this learning journey.",
     message3: "Please come and help me create beautiful memories!",
+    contactInfo: "Contact Information",
+    contactName: "Tran Duc Dao Nguyen",
+    contactPhone: "0906605877",
+    contactEmail: "tranducdaonguyen@gmail.com",
+    contactFacebook: "Facebook: Tran Duc Dao Nguyen",
     copyright: "© 2025 Class of 2025 Graduation Celebration. Made with ❤️",
     fillAllFields: "Please fill in all required information",
     requiredFields: "Full name, email and attendance time are required.",
@@ -645,17 +655,72 @@ export default function GraduationInvitation() {
 
       {/* Footer Section */}
       <footer className="bg-primary text-primary-foreground py-12 px-4 relative z-30">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="mb-6">
-            <GraduationCap className="w-12 h-12 mx-auto mb-4 text-accent" />
-            <h3 className="text-2xl font-bold mb-2">{t.thanksFromGraduate}</h3>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Contact Information - Left Side */}
+            <div className="text-left">
+              <h4 className="text-2xl font-bold mb-6 text-accent">{t.contactInfo}</h4>
+              <div className="space-y-4">
+                {/* Name */}
+                <div>
+                  <h5 className="text-lg font-semibold text-white">{t.contactName}</h5>
+                </div>
+                
+                {/* Phone */}
+                <div>
+                  <p className="text-sm text-primary-foreground/70">
+                    {language === "vi" ? "Số điện thoại" : "Phone"}
+                  </p>
+                  <p className="text-base font-medium text-white">{t.contactPhone}</p>
+                </div>
+                
+                {/* Email */}
+                <div>
+                  <p className="text-sm text-primary-foreground/70">
+                    {language === "vi" ? "Email" : "Email"}
+                  </p>
+                  <p className="text-base font-medium text-white">{t.contactEmail}</p>
+                </div>
+                
+                {/* Facebook */}
+                <div>
+                  <p className="text-sm text-primary-foreground/70">
+                    {language === "vi" ? "Facebook" : "Facebook"}
+                  </p>
+                  <a 
+                    href="https://www.facebook.com/aonguyen.627730/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-base font-medium text-accent hover:text-accent/80 transition-colors"
+                  >
+                    {t.contactName}
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            {/* Google Maps - Right Side */}
+            <div className="text-left">
+              <h4 className="text-xl font-semibold mb-4">
+                {language === "vi" ? "Vị trí sự kiện" : "Event Location"}
+              </h4>
+              <div className="w-full h-64 rounded-lg overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.123456789!2d105.8541234!3d21.0012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab4b4c4c4c4c%3A0x4c4c4c4c4c4c4c4c!2zU+G7kSAxIMSQ4bqhaSBD4bu5IFZp4buHdCwgSMOgIE5vaQ!5e0!3m2!1svi!2s!4v1234567890123!5m2!1svi!2s"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Event Location Map"
+                ></iframe>
+              </div>
+            </div>
           </div>
-          <div className="space-y-4 text-lg opacity-90">
-            <p>{t.message1}</p>
-            <p>{t.message2}</p>
-            <p>{t.message3}</p>
-          </div>
-          <div className="mt-8 pt-8 border-t border-primary-foreground/20">
+          
+          {/* Copyright */}
+          <div className="mt-8 pt-8 border-t border-primary-foreground/20 text-center">
             <p className="text-sm opacity-75">{t.copyright}</p>
           </div>
         </div>
