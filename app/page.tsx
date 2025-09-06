@@ -31,14 +31,14 @@ const translations = {
     pleaseJoin: "VUI LÒNG THAM GIA",
     graduationParty: "LỄ TỐT NGHIỆP",
     inHonorOf: "VINH DANH",
-    graduateName: "NGUYỄN VĂN A",
+    graduateName: "TRẦN ĐỨC ĐÀO NGUYÊN",
     university: "TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI",
     sunday: "CHỦ NHẬT",
-    december: "THÁNG 12",
+    december: "THÁNG 9",
     timeRange: "9:30 SÁNG ĐẾN 12:00 TRƯA",
-    venue: "KHÁCH SẠN GRAND PLAZA",
-    address1: "123 ĐƯỜNG ABC, QUẬN 1",
-    address2: "TP. HỒ CHÍ MINH",
+    venue: "ĐẠI HỌC BÁCH KHOA HÀ NỘI",
+    address1: "Tòa nhà C2, số 1 Đại Cồ Việt",
+    address2: "Phường Bạch Mai, TP. Hà Nội",
     pleaseConfirm: "VUI LÒNG XÁC NHẬN THAM DỰ BÊN DƯỚI",
     confirmAttendance: "Xác nhận tham dự",
     fillInfo: "Vui lòng điền thông tin để nhận thiệp mời cá nhân",
@@ -83,14 +83,14 @@ const translations = {
     pleaseJoin: "PLEASE JOIN US FOR A",
     graduationParty: "GRADUATION PARTY",
     inHonorOf: "IN HONOR OF",
-    graduateName: "NGUYEN VAN A",
+    graduateName: "TRAN DUC DAO NGUYEN",
     university: "HANOI UNIVERSITY OF SCIENCE AND TECHNOLOGY",
     sunday: "SUNDAY",
-    december: "DECEMBER",
+    december: "SEPTEMBER",
     timeRange: "9:30 AM TO 12:00 PM",
-    venue: "GRAND PLAZA HOTEL",
-    address1: "123 ABC STREET, DISTRICT 1",
-    address2: "HO CHI MINH CITY",
+    venue: "HANOI UNIVERSITY OF SCIENCE AND TECHNOLOGY",
+    address1: "Building C2, No. 1 Dai Co Viet",
+    address2: "Bach Mai Ward, Hanoi City",
     pleaseConfirm: "PLEASE CONFIRM YOUR ATTENDANCE BELOW",
     confirmAttendance: "Confirm Attendance",
     fillInfo: "Please fill in your information to receive a personalized invitation",
@@ -202,11 +202,14 @@ export default function GraduationInvitation() {
     }
   }
 
-  const generateInvitationCard = () => {
+  const generateInvitationCard = (): Promise<string> => {
     return new Promise((resolve) => {
       const canvas = document.createElement("canvas")
       const ctx = canvas.getContext("2d")
-      if (!ctx) return
+      if (!ctx) {
+        resolve("")
+        return
+      }
 
       // A6 format: 105mm x 148mm (portrait orientation)
       // Optimized size for better content distribution
@@ -420,7 +423,7 @@ export default function GraduationInvitation() {
                   <p className="text-sm uppercase tracking-wider text-gray-600">{t.sunday}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-4xl font-bold text-primary">15</p>
+                  <p className="text-4xl font-bold text-primary">28</p>
                 </div>
                 <div className="text-center">
                   <p className="text-sm uppercase tracking-wider text-gray-600">{t.december}</p>
