@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { GraduationCap, Download, ChevronLeft, ChevronRight, Globe } from "lucide-react"
+import { GraduationCap, Download, Globe } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { BackgroundCarousel } from "@/components/background-carousel"
+import { getBackgroundImages } from "@/lib/image-utils"
 
 interface FormData {
   fullName: string
@@ -24,6 +26,7 @@ const translations = {
     classOf: "Class of 2025",
     graduationCelebration: "Graduation Celebration",
     shareMemory: "Hãy cùng chia sẻ khoảnh khắc đáng nhớ này với tôi!",
+    graduationOf: "Lễ tốt nghiệp của Trần Đức Đào Nguyên",
     pleaseJoin: "VUI LÒNG THAM GIA",
     graduationParty: "LỄ TỐT NGHIỆP",
     inHonorOf: "VINH DANH",
@@ -72,6 +75,7 @@ const translations = {
     classOf: "Class of 2025",
     graduationCelebration: "Graduation Celebration",
     shareMemory: "Let's share this memorable moment together with me!",
+    graduationOf: "Graduation of Tran Duc Dao Nguyen",
     pleaseJoin: "PLEASE JOIN US FOR A",
     graduationParty: "GRADUATION PARTY",
     inHonorOf: "IN HONOR OF",
@@ -118,26 +122,11 @@ const translations = {
   },
 }
 
-const slideshowImages = [
-  {
-    src: "/graduation-photo-portrait.jpg",
-    title: "Class of 2025",
-    subtitle: "Graduation Celebration",
-    description: "Hãy cùng chia sẻ khoảnh khắc đáng nhớ này với tôi!",
-  },
-  {
-    src: "/images/industry/education.png",
-    title: "Lễ Tốt Nghiệp",
-    subtitle: "Khoảnh Khắc Đáng Nhớ",
-    description: "Cùng nhau tạo nên những kỷ niệm đẹp nhất!",
-  },
-  {
-    src: "/university-campus-with-graduation-decorations.jpg",
-    title: "Trường Đại Học",
-    subtitle: "Nơi Khởi Đầu Ước Mơ",
-    description: "Từ đây, chúng ta bước vào tương lai tươi sáng!",
-  },
-]
+// Get dynamic background images from utility function
+const backgroundImages = getBackgroundImages()
+
+// User's profile logo (center image)
+const userProfileImage = "/graduation-photo-portrait.jpg"
 
 export default function GraduationInvitation() {
   const [language, setLanguage] = useState<"vi" | "en">("vi")
@@ -150,7 +139,6 @@ export default function GraduationInvitation() {
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [currentSlide, setCurrentSlide] = useState(0)
   const { toast } = useToast()
 
   const toggleLanguage = () => {
@@ -158,26 +146,6 @@ export default function GraduationInvitation() {
   }
 
   const t = translations[language]
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slideshowImages.length)
-    }, 4000)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slideshowImages.length)
-  }
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slideshowImages.length) % slideshowImages.length)
-  }
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index)
-  }
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -334,63 +302,43 @@ export default function GraduationInvitation() {
         </Button>
       </div>
 
-      {/* Header Section with Slideshow */}
-      <header className="bg-primary text-primary-foreground py-16 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/80 to-primary z-0"></div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="mb-8">
-            <div className="w-48 h-48 mx-auto mb-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center relative overflow-hidden shadow-2xl">
-              <img
-                src={slideshowImages[currentSlide].src || "/placeholder.svg"}
-                alt={`Slide ${currentSlide + 1}`}
-                className="w-44 h-44 rounded-full object-cover transition-all duration-700 ease-in-out transform hover:scale-105"
-              />
-              <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
-            </div>
-            <div className="w-20 h-20 mx-auto mb-6 bg-accent rounded-full flex items-center justify-center shadow-lg animate-pulse">
-              <GraduationCap className="w-10 h-10 text-accent-foreground" />
+      {/* Header Section with Background Carousel */}
+      <header className="relative h-[33vh] overflow-hidden">
+        {/* Background Carousel */}
+        <BackgroundCarousel
+          images={backgroundImages}
+          autoPlay={true}
+          autoPlayInterval={5000}
+          showControls={true}
+          showDots={true}
+          className="h-full"
+        />
+        
+        {/* Content Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="max-w-4xl mx-auto text-center px-4">
+            {/* User's Profile Logo (Center Image) - Large */}
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-40 h-40 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center relative overflow-hidden shadow-2xl border-4 border-white/20 mb-4">
+                <img
+                  src={userProfileImage || "/placeholder.svg"}
+                  alt="Graduate Profile"
+                  className="w-36 h-36 rounded-full object-cover transition-all duration-700 ease-in-out transform hover:scale-105"
+                />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
+              </div>
+              
+              {/* Graduation Text Below Logo */}
+              <h1 className="text-2xl font-bold text-white text-center drop-shadow-2xl">
+                {t.graduationOf}
+              </h1>
             </div>
           </div>
-          <h1 className="text-6xl font-bold mb-4 text-balance">{t.classOf}</h1>
-          <h2 className="text-3xl mb-4 font-light">{t.graduationCelebration}</h2>
-          <p className="text-xl opacity-90 font-light italic">{t.shareMemory}</p>
         </div>
-        <div className="absolute inset-y-0 left-4 flex items-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={prevSlide}
-            className="text-white hover:bg-white/20 rounded-full w-12 h-12 backdrop-blur-sm border border-white/20"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </Button>
-        </div>
-        <div className="absolute inset-y-0 right-4 flex items-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={nextSlide}
-            className="text-white hover:bg-white/20 rounded-full w-12 h-12 backdrop-blur-sm border border-white/20"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </Button>
-        </div>
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
-          {slideshowImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`w-4 h-4 rounded-full transition-all duration-300 border-2 border-white/50 ${
-                index === currentSlide
-                  ? "bg-white scale-110 border-white"
-                  : "bg-white/30 hover:bg-white/60 hover:scale-105"
-              }`}
-              aria-label={`Chuyển đến slide ${index + 1}`}
-            />
-          ))}
-        </div>
-        <div className="absolute top-10 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
-        <div className="absolute bottom-10 right-10 w-24 h-24 bg-accent/20 rounded-full blur-lg"></div>
+        
+        {/* Decorative Elements */}
+        <div className="absolute top-4 left-4 w-16 h-16 bg-white/5 rounded-full blur-xl"></div>
+        <div className="absolute bottom-4 right-4 w-12 h-12 bg-accent/20 rounded-full blur-lg"></div>
       </header>
 
       {/* Event Details Section */}
