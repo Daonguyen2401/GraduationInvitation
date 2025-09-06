@@ -203,83 +203,101 @@ export default function GraduationInvitation() {
   }
 
   const generateInvitationCard = () => {
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
+      if (!ctx) return
 
-    canvas.width = 800
-    canvas.height = 600
+      // A6 format: 105mm x 148mm (portrait orientation)
+      // Optimized size for better content distribution
+      canvas.width = 600
+      canvas.height = 700
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
-    gradient.addColorStop(0, "#1e3a8a")
-    gradient.addColorStop(1, "#3b82f6")
-    ctx.fillStyle = gradient
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+      // White background
+      ctx.fillStyle = "#ffffff"
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.fillStyle = "rgba(255, 255, 255, 0.1)"
-    ctx.beginPath()
-    ctx.arc(700, 100, 60, 0, Math.PI * 2)
-    ctx.fill()
+      // Add simple border
+      ctx.strokeStyle = "#e5e7eb"
+      ctx.lineWidth = 2
+      ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40)
 
-    ctx.fillStyle = "#facc15"
-    ctx.fillRect(660, 80, 80, 8)
-    ctx.fillRect(690, 70, 20, 20)
+      // Add university logo
+      const logo = new Image()
+      logo.onload = () => {
+        ctx.drawImage(logo, (canvas.width - 100) / 2, 30, 100, 100)
+        
+        // Continue with the rest of the drawing
+        ctx.fillStyle = "#6b7280"
+        ctx.font = "italic 18px serif"
+        ctx.textAlign = "center"
+        ctx.fillText("class of", canvas.width / 2, 170)
 
-    ctx.fillStyle = "#e5e7eb"
-    ctx.font = "italic 28px serif"
-    ctx.textAlign = "center"
-    ctx.fillText("class of", canvas.width / 2, 120)
+        ctx.fillStyle = "#1e40af"
+        ctx.font = "bold 42px Arial"
+        ctx.fillText("2025", canvas.width / 2, 210)
 
-    ctx.fillStyle = "#ffffff"
-    ctx.font = "bold 72px Arial"
-    ctx.fillText("2025", canvas.width / 2, 200)
+        ctx.font = "16px Arial"
+        ctx.fillStyle = "#6b7280"
+        ctx.fillText(language === "vi" ? "THƯ MỜI THAM DỰ" : "INVITATION", canvas.width / 2, 240)
 
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "#e5e7eb"
-    ctx.fillText(language === "vi" ? "VUI LÒNG THAM GIA" : "PLEASE JOIN US FOR A", canvas.width / 2, 250)
+        ctx.font = "bold 28px Arial"
+        ctx.fillStyle = "#1e40af"
+        ctx.fillText(language === "vi" ? "LỄ TỐT NGHIỆP" : "GRADUATION PARTY", canvas.width / 2, 280)
 
-    ctx.font = "bold 32px Arial"
-    ctx.fillStyle = "#ffffff"
-    ctx.fillText(language === "vi" ? "LỄ TỐT NGHIỆP" : "GRADUATION PARTY", canvas.width / 2, 285)
+        ctx.font = "16px Arial"
+        ctx.fillStyle = "#6b7280"
+        ctx.fillText(language === "vi" ? "XIN MỜI" : "INVITING", canvas.width / 2, 310)
 
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "#e5e7eb"
-    ctx.fillText(language === "vi" ? "VINH DANH" : "IN HONOR OF", canvas.width / 2, 315)
+        const displayName = formData.nickname || formData.fullName
+        ctx.font = "bold 24px Arial"
+        ctx.fillStyle = "#3b82f6"
+        ctx.fillText(displayName.toUpperCase(), canvas.width / 2, 340)
 
-    const displayName = formData.nickname || formData.fullName
-    ctx.font = "bold 28px Arial"
-    ctx.fillStyle = "#facc15"
-    ctx.fillText(displayName.toUpperCase(), canvas.width / 2, 355)
+        // Format graduate name with line break and bold
+        ctx.font = "14px Arial"
+        ctx.fillStyle = "#6b7280"
+        const graduateText = language === "vi" ? "Tới tham dự lễ tốt nghiệp của cử nhân" : "To attend the graduation ceremony of graduate"
+        ctx.fillText(graduateText, canvas.width / 2, 370)
+        
+        ctx.font = "bold 16px Arial"
+        ctx.fillStyle = "#1e40af"
+        const graduateName = language === "vi" ? "Trần Đức Đào Nguyên" : "Tran Duc Dao Nguyen"
+        ctx.fillText(graduateName, canvas.width / 2, 395)
 
-    ctx.font = "14px Arial"
-    ctx.fillStyle = "#e5e7eb"
-    ctx.fillText(t.university, canvas.width / 2, 380)
+        ctx.font = "18px Arial"
+        ctx.fillStyle = "#1e40af"
+        const dateText = language === "vi" ? "CHỦ NHẬT NGÀY 28 THÁNG 9" : "SUNDAY 28 SEPTEMBER"
+        ctx.fillText(dateText, canvas.width / 2, 430)
+        const timeText =
+          language === "vi" ? `${formData.attendanceTime} SÁNG` : `${formData.attendanceTime} AM`
+        ctx.fillText(timeText, canvas.width / 2, 455)
 
-    ctx.font = "18px Arial"
-    ctx.fillStyle = "#ffffff"
-    const dateText = language === "vi" ? "CHỦ NHẬT    15    THÁNG 12" : "SUNDAY    15    DECEMBER"
-    ctx.fillText(dateText, canvas.width / 2, 430)
-    const timeText =
-      language === "vi" ? `${formData.attendanceTime} - 12:00 TRƯA` : `${formData.attendanceTime} - 12:00 PM`
-    ctx.fillText(timeText, canvas.width / 2, 455)
+        ctx.font = "bold 20px Arial"
+        ctx.fillStyle = "#1e40af"
+        ctx.fillText(t.venue, canvas.width / 2, 490)
+        ctx.font = "14px Arial"
+        ctx.fillStyle = "#6b7280"
+        ctx.fillText(t.address1, canvas.width / 2, 515)
+        ctx.fillText(t.address2, canvas.width / 2, 535)
 
-    ctx.font = "bold 20px Arial"
-    ctx.fillStyle = "#ffffff"
-    ctx.fillText(t.venue, canvas.width / 2, 490)
-    ctx.font = "14px Arial"
-    ctx.fillStyle = "#e5e7eb"
-    ctx.fillText(t.address1, canvas.width / 2, 510)
-    ctx.fillText(t.address2, canvas.width / 2, 530)
+        ctx.font = "italic 16px Arial"
+        ctx.fillStyle = "#3b82f6"
+        ctx.fillText(t.shareMemory, canvas.width / 2, 570)
 
-    ctx.font = "italic 16px Arial"
-    ctx.fillStyle = "#facc15"
-    ctx.fillText(t.shareMemory, canvas.width / 2, 570)
+        // Add contact information
+        ctx.font = "14px Arial"
+        ctx.fillStyle = "#6b7280"
+        ctx.fillText(language === "vi" ? "Liên hệ: 0906605877" : "Contact: 0906605877", canvas.width / 2, 600)
 
-    return canvas.toDataURL("image/png")
+        resolve(canvas.toDataURL("image/png"))
+      }
+      logo.src = "/R.png"
+    })
   }
 
-  const downloadInvitation = () => {
-    const dataUrl = generateInvitationCard()
+  const downloadInvitation = async () => {
+    const dataUrl = await generateInvitationCard()
     if (!dataUrl) return
 
     const displayName = formData.nickname || formData.fullName
@@ -365,9 +383,9 @@ export default function GraduationInvitation() {
             <blockquote className="text-xl leading-relaxed text-gray-700 italic mb-4">
               "{language === "vi" ? t.gratitudeQuote : t.gratitudeQuoteEn}"
             </blockquote>
-            <div className="text-sm text-gray-500">
-              {language === "vi" ? "— Trần Đức Đào Nguyên" : "— Tran Duc Dao Nguyen"}
-            </div>
+              <div className="text-sm text-gray-500">
+                {language === "vi" ? "— Trần Đức Đào Nguyên —" : "— Tran Duc Dao Nguyen —"}
+              </div>
           </div>
         </div>
       </section>
