@@ -20,6 +20,11 @@ interface FormData {
   attendanceTime: string
 }
 
+interface FormErrors {
+  phone?: string
+  email?: string
+}
+
 const translations = {
   vi: {
     languageToggle: "English",
@@ -72,6 +77,8 @@ const translations = {
     confirmSuccessDesc: "Cảm ơn bạn đã xác nhận tham dự. Thiệp mời cá nhân đã được tạo.",
     downloadSuccess: "Tải xuống thành công!",
     downloadSuccessDesc: "Thiệp mời đã được tải về máy của bạn.",
+    invalidPhone: "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam (10-11 chữ số).",
+    invalidEmail: "Email không hợp lệ. Vui lòng nhập địa chỉ email đúng định dạng.",
   },
   en: {
     languageToggle: "Tiếng Việt",
@@ -125,6 +132,8 @@ const translations = {
     confirmSuccessDesc: "Thank you for confirming your attendance. A personalized invitation has been created.",
     downloadSuccess: "Download Successful!",
     downloadSuccessDesc: "The invitation has been downloaded to your device.",
+    invalidPhone: "Invalid phone number. Please enter a valid Vietnamese phone number (10-11 digits).",
+    invalidEmail: "Invalid email format. Please enter a valid email address.",
   },
 }
 
@@ -133,6 +142,18 @@ const backgroundImages = getBackgroundImages()
 
 // User's profile logo (center image)
 const userProfileImage = "/graduation-photo-portrait.jpg"
+
+// Validation functions
+const validatePhone = (phone: string): boolean => {
+  // Vietnamese phone number validation: 10-11 digits, can start with 0 or +84
+  const phoneRegex = /^(\+84|0)[0-9]{9,10}$/
+  return phoneRegex.test(phone.replace(/\s/g, ''))
+}
+
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
 
 export default function GraduationInvitation() {
   const [language, setLanguage] = useState<"vi" | "en">("vi")
@@ -143,6 +164,7 @@ export default function GraduationInvitation() {
     email: "",
     attendanceTime: "",
   })
+  const [formErrors, setFormErrors] = useState<FormErrors>({})
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
@@ -155,14 +177,50 @@ export default function GraduationInvitation() {
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+    
+    // Clear error when user starts typing
+    if (formErrors[field as keyof FormErrors]) {
+      setFormErrors((prev) => ({ ...prev, [field]: undefined }))
+    }
+    
+    // Real-time validation for phone and email
+    if (field === 'phone' && value && !validatePhone(value)) {
+      setFormErrors((prev) => ({ ...prev, phone: t.invalidPhone }))
+    } else if (field === 'email' && value && !validateEmail(value)) {
+      setFormErrors((prev) => ({ ...prev, email: t.invalidEmail }))
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Check required fields
     if (!formData.fullName || !formData.email || !formData.attendanceTime) {
       toast({
         title: t.fillAllFields,
         description: t.requiredFields,
+        variant: "destructive",
+      })
+      return
+    }
+    
+    // Validate phone number
+    if (formData.phone && !validatePhone(formData.phone)) {
+      setFormErrors((prev) => ({ ...prev, phone: t.invalidPhone }))
+      toast({
+        title: t.fillAllFields,
+        description: t.invalidPhone,
+        variant: "destructive",
+      })
+      return
+    }
+    
+    // Validate email
+    if (!validateEmail(formData.email)) {
+      setFormErrors((prev) => ({ ...prev, email: t.invalidEmail }))
+      toast({
+        title: t.fillAllFields,
+        description: t.invalidEmail,
         variant: "destructive",
       })
       return
@@ -489,9 +547,12 @@ export default function GraduationInvitation() {
                       value={formData.phone}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
                       placeholder={t.phonePlaceholder}
-                      className="mt-2"
+                      className={`mt-2 ${formErrors.phone ? 'border-red-500 focus:border-red-500' : ''}`}
                       required
                     />
+                    {formErrors.phone && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>
+                    )}
                   </div>
                   <div>
                     <Label htmlFor="email" className="text-base font-semibold text-primary">
@@ -503,9 +564,12 @@ export default function GraduationInvitation() {
                       value={formData.email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
                       placeholder={t.emailPlaceholder}
-                      className="mt-2"
+                      className={`mt-2 ${formErrors.email ? 'border-red-500 focus:border-red-500' : ''}`}
                       required
                     />
+                    {formErrors.email && (
+                      <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
+                    )}
                   </div>
                   <div>
                     <Label className="text-base font-semibold text-primary mb-4 block">{t.attendanceTime} *</Label>
