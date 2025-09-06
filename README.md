@@ -28,6 +28,7 @@ This project is developed to help graduates create professional and personalized
   - Attendance time (select from available time slots)
 - **Input validation** for data integrity
 - **Toast notifications** for status updates
+- **Database integration** with Supabase for data persistence
 
 ### 🎫 Personalized Invitation Generation
 - **Canvas-based** dynamically generated invitation cards
@@ -44,6 +45,12 @@ This project is developed to help graduates create professional and personalized
 - **Smooth animations** and hover effects
 - **Loading states** and instant feedback
 - **Mobile-first** responsive design
+
+### 🗄️ Admin Features
+- **Attendance management** dashboard
+- **Real-time data** viewing and statistics
+- **CSV export** functionality for data backup
+- **Time-based statistics** for attendance planning
 
 ## 🛠️ Technology Stack
 
@@ -63,6 +70,11 @@ This project is developed to help graduates create professional and personalized
 - **PostCSS** - CSS processing
 - **ESLint** - Code linting
 - **TypeScript** - Static type checking
+
+### Database & Backend
+- **Supabase** - PostgreSQL database with real-time features
+- **@supabase/supabase-js** - JavaScript client library
+- **Next.js API Routes** - Serverless API endpoints
 
 ### Deployment
 - **Netlify** - Static site hosting
@@ -86,6 +98,60 @@ pnpm install
 npm install
 ```
 
+### Database Setup
+
+#### 1. Configure Environment Variables
+Create `.env.local` file in the root directory:
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://nqatzqopczulipwhlsed.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_KEY=your_supabase_service_role_key_here
+```
+
+#### 2. Create Database Schema
+Run the following SQL in Supabase SQL Editor:
+
+```sql
+-- Tạo bảng attendance_confirmations để lưu trữ thông tin xác nhận tham dự
+CREATE TABLE IF NOT EXISTS attendance_confirmations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  full_name VARCHAR(255) NOT NULL,
+  nickname VARCHAR(255),
+  phone VARCHAR(20) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  attendance_time VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tạo index để tối ưu hóa truy vấn
+CREATE INDEX IF NOT EXISTS idx_attendance_confirmations_email ON attendance_confirmations(email);
+CREATE INDEX IF NOT EXISTS idx_attendance_confirmations_created_at ON attendance_confirmations(created_at);
+
+-- Tạo function để tự động cập nhật updated_at
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Tạo trigger để tự động cập nhật updated_at
+CREATE TRIGGER update_attendance_confirmations_updated_at 
+    BEFORE UPDATE ON attendance_confirmations 
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+```
+
+#### 3. Get Supabase Keys
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
+2. Select your project
+3. Navigate to **Settings** > **API**
+4. Copy **Project URL** and **anon public** key
+5. For service role key, copy **service_role** key (use with caution)
+
 ### Run Development Server
 ```bash
 pnpm dev
@@ -94,6 +160,10 @@ npm run dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to view the application.
+
+#### 4. Test the Application
+- **Main page**: `http://localhost:3000` - Fill form and submit to test database integration
+- **Admin page**: `http://localhost:3000/admin` - View attendance list and export data
 
 ### Build for Production
 ```bash
@@ -114,6 +184,9 @@ npm run deploy
 ```
 graduation-invitation/
 ├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   │   └── attendance/    # Attendance API endpoints
+│   ├── admin/             # Admin dashboard
 │   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
 │   └── page.tsx           # Main page component
@@ -122,9 +195,12 @@ graduation-invitation/
 │   └── theme-provider.tsx # Theme context
 ├── hooks/                # Custom React hooks
 ├── lib/                  # Utility functions
+│   └── supabase.ts      # Supabase client configuration
 ├── public/               # Static assets
 │   └── images/          # Image resources
 ├── styles/               # Additional stylesheets
+├── .env.local           # Environment variables (create this)
+├── database-schema.sql  # Database schema for Supabase
 ├── netlify.toml         # Netlify configuration
 ├── next.config.mjs       # Next.js configuration
 ├── package.json          # Dependencies and scripts

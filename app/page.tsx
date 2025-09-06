@@ -149,6 +149,7 @@ export default function GraduationInvitation() {
     attendanceTime: "",
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
   const { toast } = useToast()
 
@@ -182,7 +183,7 @@ export default function GraduationInvitation() {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.fullName || !formData.email || !formData.attendanceTime) {
       toast({
@@ -192,11 +193,39 @@ export default function GraduationInvitation() {
       })
       return
     }
-    setIsSubmitted(true)
-    toast({
-      title: t.confirmSuccess,
-      description: t.confirmSuccessDesc,
-    })
+
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/attendance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to save attendance confirmation')
+      }
+
+      setIsSubmitted(true)
+      toast({
+        title: t.confirmSuccess,
+        description: t.confirmSuccessDesc,
+      })
+    } catch (error) {
+      console.error('Error saving attendance confirmation:', error)
+      toast({
+        title: "Lỗi",
+        description: error instanceof Error ? error.message : "Có lỗi xảy ra khi lưu thông tin. Vui lòng thử lại.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const generateInvitationCard = () => {
@@ -502,9 +531,10 @@ export default function GraduationInvitation() {
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 text-base font-semibold"
+                    disabled={isSubmitting}
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 text-base font-semibold disabled:opacity-50"
                   >
-                    {t.confirmButton}
+                    {isSubmitting ? "Đang xử lý..." : t.confirmButton}
                   </Button>
                 </form>
               </CardContent>
