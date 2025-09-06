@@ -681,7 +681,12 @@ export default function GraduationInvitation() {
                   <p className="text-sm text-primary-foreground/70">
                     {language === "vi" ? "Số điện thoại" : "Phone"}
                   </p>
-                  <p className="text-base font-medium text-white">{t.contactPhone}</p>
+                  <a 
+                    href={`tel:${t.contactPhone}`}
+                    className="text-base font-medium text-accent hover:text-accent/80 transition-colors"
+                  >
+                    {t.contactPhone}
+                  </a>
                 </div>
                 
                 {/* Email */}
@@ -689,7 +694,12 @@ export default function GraduationInvitation() {
                   <p className="text-sm text-primary-foreground/70">
                     {language === "vi" ? "Email" : "Email"}
                   </p>
-                  <p className="text-base font-medium text-white">{t.contactEmail}</p>
+                  <a 
+                    href={`mailto:${t.contactEmail}`}
+                    className="text-base font-medium text-accent hover:text-accent/80 transition-colors"
+                  >
+                    {t.contactEmail}
+                  </a>
                 </div>
                 
                 {/* Facebook */}
