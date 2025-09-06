@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/generate-images.js",
+    "predev": "node scripts/generate-images.js",
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "deploy": "pnpm build && netlify deploy --prod --dir=out"
+    "deploy": "pnpm build && netlify deploy --prod --dir=out",
+    "update-images": "node scripts/generate-images.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -5,38 +5,35 @@ export interface BackgroundImage {
   alt: string
 }
 
-// List of all available background images in /public/slideshow folder
-// Add new images here when you add them to /public/slideshow
-const BACKGROUND_IMAGE_FILES = [
-  "graduation-ceremony-crowd.jpg",
-  "university-campus-with-graduation-decorations.jpg", 
+// Static list of images - this will be updated when you add new images to /public/slideshow
+// The system will automatically detect all images in the slideshow directory
+const SLIDESHOW_IMAGES = [
   "diploma-and-cap.jpg",
-  "iStock-1436453674-1024x540.jpg",
-  // Add more images here as you add them to /public/slideshow folder
-  // Example: "new-image-1.jpg", "new-image-2.jpg", "new-image-3.jpg", etc.
+  "graduation-ceremony-crowd.jpg",
+  "university-campus-with-graduation-decorations.jpg",
 ]
 
-// Function to get all background images dynamically
+// Function to get all background images
 export const getBackgroundImages = (): BackgroundImage[] => {
-  return BACKGROUND_IMAGE_FILES.map((filename, index) => ({
+  return SLIDESHOW_IMAGES.map((filename, index) => ({
     src: `/slideshow/${filename}`,
     alt: `Background Image ${index + 1}`,
   }))
 }
 
-// Function to add a new image to the list (for easy management)
-export const addBackgroundImage = (filename: string): void => {
-  if (!BACKGROUND_IMAGE_FILES.includes(filename)) {
-    BACKGROUND_IMAGE_FILES.push(filename)
-  }
-}
-
 // Function to get the count of available images
 export const getImageCount = (): number => {
-  return BACKGROUND_IMAGE_FILES.length
+  return SLIDESHOW_IMAGES.length
 }
 
-// Function to check if an image exists in the list
+// Function to check if an image exists
 export const hasImage = (filename: string): boolean => {
-  return BACKGROUND_IMAGE_FILES.includes(filename)
+  return SLIDESHOW_IMAGES.includes(filename)
+}
+
+// Function to add a new image (for manual updates)
+export const addImage = (filename: string): void => {
+  if (!SLIDESHOW_IMAGES.includes(filename)) {
+    SLIDESHOW_IMAGES.push(filename)
+  }
 }
