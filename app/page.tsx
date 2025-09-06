@@ -254,6 +254,18 @@ export default function GraduationInvitation() {
       }
 
       setIsSubmitted(true)
+      
+      // Generate and display invitation image
+      setTimeout(async () => {
+        const dataUrl = await generateInvitationCard()
+        if (dataUrl) {
+          const previewElement = document.getElementById('invitation-preview')
+          if (previewElement) {
+            previewElement.innerHTML = `<img src="${dataUrl}" alt="Generated Invitation" className="w-full h-auto" />`
+          }
+        }
+      }, 500)
+      
       toast({
         title: t.confirmSuccess,
         description: t.confirmSuccessDesc,
@@ -370,6 +382,12 @@ export default function GraduationInvitation() {
   const downloadInvitation = async () => {
     const dataUrl = await generateInvitationCard()
     if (!dataUrl) return
+
+    // Display the generated image in the preview
+    const previewElement = document.getElementById('invitation-preview')
+    if (previewElement) {
+      previewElement.innerHTML = `<img src="${dataUrl}" alt="Generated Invitation" className="w-full h-auto" />`
+    }
 
     const displayName = formData.nickname || formData.fullName
     const link = document.createElement("a")
@@ -627,26 +645,18 @@ export default function GraduationInvitation() {
                 </div>
                 <h3 className="text-2xl font-bold text-primary mb-4">{t.thankYou}</h3>
                 <p className="text-muted-foreground mb-6">{t.confirmationMessage}</p>
-                <div className="space-y-4">
-                  <div className="p-4 bg-card rounded-lg border">
-                    <p className="font-semibold">{t.attendanceInfo}</p>
-                    <p>
-                      {t.name} {formData.fullName}
-                    </p>
-                    {formData.nickname && (
-                      <p>
-                        {t.alias} {formData.nickname}
-                      </p>
-                    )}
-                    <p>
-                      {t.time} {formData.attendanceTime}
-                    </p>
+                
+                {/* Generated Invitation Image */}
+                <div className="mb-6">
+                  <div id="invitation-preview" className="w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden" style={{maxWidth: '850px'}}>
+                    {/* This will be populated by the generated image */}
                   </div>
-                  <Button onClick={downloadInvitation} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                    <Download className="w-4 h-4 mr-2" />
-                    {t.downloadInvitation}
-                  </Button>
                 </div>
+                
+                <Button onClick={downloadInvitation} className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                  <Download className="w-4 h-4 mr-2" />
+                  Tải thiệp mời
+                </Button>
               </CardContent>
             </Card>
           )}
