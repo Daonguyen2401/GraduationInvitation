@@ -3,6 +3,7 @@
 export interface BackgroundImage {
   src: string
   alt: string
+  title?: string
 }
 
 // Static list of images - this will be updated when you add new images to /public/slideshow
@@ -15,9 +16,16 @@ const SLIDESHOW_IMAGES = [
 
 // Function to get all background images
 export const getBackgroundImages = (): BackgroundImage[] => {
+  const imageTitles = [
+    "Diploma and Cap",
+    "Graduation Ceremony Crowd", 
+    "University Campus with Graduation Decorations"
+  ]
+  
   return SLIDESHOW_IMAGES.map((filename, index) => ({
     src: `/slideshow/${filename}`,
     alt: `Background Image ${index + 1}`,
+    title: imageTitles[index] || `Background Image ${index + 1}`,
   }))
 }
 

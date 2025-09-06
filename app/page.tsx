@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { GraduationCap, Download, Globe } from "lucide-react"
+import { GraduationCap, Download, Globe, ChevronLeft } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { BackgroundCarousel } from "@/components/background-carousel"
+import { MultiImageCarousel } from "@/components/multi-image-carousel"
+import { GraduationHeader } from "@/components/graduation-header"
 import { getBackgroundImages } from "@/lib/image-utils"
 
 interface FormData {
@@ -27,6 +28,7 @@ const translations = {
     graduationCelebration: "Graduation Celebration",
     shareMemory: "Hãy cùng chia sẻ khoảnh khắc đáng nhớ này với tôi!",
     graduationOf: "Lễ tốt nghiệp của Trần Đức Đào Nguyên",
+    graduationTitle: "Lễ tốt nghiệp của Trần Đức Đào Nguyên",
     pleaseJoin: "VUI LÒNG THAM GIA",
     graduationParty: "LỄ TỐT NGHIỆP",
     inHonorOf: "VINH DANH",
@@ -76,6 +78,7 @@ const translations = {
     graduationCelebration: "Graduation Celebration",
     shareMemory: "Let's share this memorable moment together with me!",
     graduationOf: "Graduation of Tran Duc Dao Nguyen",
+    graduationTitle: "Graduation of Tran Duc Dao Nguyen",
     pleaseJoin: "PLEASE JOIN US FOR A",
     graduationParty: "GRADUATION PARTY",
     inHonorOf: "IN HONOR OF",
@@ -290,6 +293,7 @@ export default function GraduationInvitation() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Language Toggle Button */}
       <div className="fixed top-4 right-4 z-50">
         <Button
           onClick={toggleLanguage}
@@ -302,47 +306,60 @@ export default function GraduationInvitation() {
         </Button>
       </div>
 
-      {/* Header Section with Background Carousel */}
-      <header className="relative h-[33vh] overflow-hidden">
-        {/* Background Carousel */}
-        <BackgroundCarousel
-          images={backgroundImages}
-          autoPlay={true}
-          autoPlayInterval={5000}
-          showControls={true}
-          showDots={true}
-          className="h-full"
-        />
-        
-        {/* Content Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="max-w-4xl mx-auto text-center px-4">
-            {/* User's Profile Logo (Center Image) - Large */}
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-40 h-40 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center relative overflow-hidden shadow-2xl border-4 border-white/20 mb-4">
-                <img
-                  src={userProfileImage || "/placeholder.svg"}
-                  alt="Graduate Profile"
-                  className="w-36 h-36 rounded-full object-cover transition-all duration-700 ease-in-out transform hover:scale-105"
-                />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
-              </div>
-              
-              {/* Graduation Text Below Logo */}
-              <h1 className="text-2xl font-bold text-white text-center drop-shadow-2xl">
-                {t.graduationOf}
-              </h1>
-            </div>
+      {/* Full Screen Multi-Image Carousel */}
+      <MultiImageCarousel
+        images={backgroundImages}
+        autoPlay={true}
+        autoPlayInterval={5000}
+        showControls={true}
+        showDots={true}
+        className="fixed inset-0 z-0"
+      />
+      
+      {/* Graduation Header */}
+      <GraduationHeader
+        graduateName={t.graduateName}
+        university={t.university}
+        graduationTitle={t.graduationTitle}
+        universityLogo="/images/industry/education.png"
+        className="fixed top-0 left-0 right-0 z-30"
+      />
+      
+      {/* Main Content Overlay */}
+      <div className="fixed inset-0 flex items-center justify-center z-20 pt-20">
+        <div className="max-w-4xl mx-auto text-center px-4">
+          {/* Main Graduation Text */}
+          <div className="flex flex-col items-center justify-center">
+            <h1 className="text-4xl font-bold text-white text-center drop-shadow-2xl mb-4">
+              {t.graduationOf}
+            </h1>
+            <p className="text-xl text-white/90 drop-shadow-lg max-w-2xl">
+              {t.shareMemory}
+            </p>
           </div>
         </div>
-        
-        {/* Decorative Elements */}
-        <div className="absolute top-4 left-4 w-16 h-16 bg-white/5 rounded-full blur-xl"></div>
-        <div className="absolute bottom-4 right-4 w-12 h-12 bg-accent/20 rounded-full blur-lg"></div>
-      </header>
+      </div>
+      
+      {/* Decorative Elements */}
+      <div className="fixed top-4 left-4 w-16 h-16 bg-white/5 rounded-full blur-xl z-10"></div>
+      <div className="fixed bottom-4 right-4 w-12 h-12 bg-accent/20 rounded-full blur-lg z-10"></div>
+      
+      {/* Scroll Down Button */}
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+        <Button
+          onClick={() => {
+            document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' })
+          }}
+          variant="outline"
+          size="lg"
+          className="bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30 text-white"
+        >
+          <ChevronLeft className="w-6 h-6 rotate-90" />
+        </Button>
+      </div>
 
       {/* Event Details Section */}
-      <section className="py-16 px-4 bg-muted/30">
+      <section id="main-content" className="py-16 px-4 bg-muted/30 relative z-30">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-lg shadow-lg p-12 text-center border">
             <div className="mb-6">
@@ -386,7 +403,7 @@ export default function GraduationInvitation() {
       </section>
 
       {/* RSVP Form Section */}
-      <section className="py-16 px-4 bg-background">
+      <section className="py-16 px-4 bg-background relative z-30">
         <div className="max-w-lg mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-primary mb-4">{t.confirmAttendance}</h2>
@@ -522,7 +539,7 @@ export default function GraduationInvitation() {
       </section>
 
       {/* Footer Section */}
-      <footer className="bg-primary text-primary-foreground py-12 px-4">
+      <footer className="bg-primary text-primary-foreground py-12 px-4 relative z-30">
         <div className="max-w-4xl mx-auto text-center">
           <div className="mb-6">
             <GraduationCap className="w-12 h-12 mx-auto mb-4 text-accent" />
