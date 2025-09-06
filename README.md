@@ -37,14 +37,27 @@ This project is developed to help graduates create professional and personalized
   - Personalized guest name
   - Event time and location
   - Beautiful gradient background
+  - Contact information integration
+- **Live Preview** - Generated invitation displays immediately after confirmation
+- **Large Display** - 850px wide invitation preview for better visibility
 - **Download** invitation as PNG file
 - Automatic filename based on guest name
+
+### 🗺️ Location & Contact Features
+- **Google Maps Integration** - Interactive map showing event location
+- **Contact Information Display** - Professional contact section with:
+  - Graduate name and details
+  - Phone number and email
+  - Facebook profile link
+- **Two-column Footer Layout** - Contact info on left, map on right
+- **Responsive Map** - Optimized for all device sizes
 
 ### 🎯 User Experience
 - **Interactive slideshow** with manual controls
 - **Smooth animations** and hover effects
 - **Loading states** and instant feedback
 - **Mobile-first** responsive design
+- **Clean Confirmation Flow** - Streamlined post-submission experience
 
 ### 🗄️ Admin Features
 - **Attendance management** dashboard
@@ -75,6 +88,11 @@ This project is developed to help graduates create professional and personalized
 - **Supabase** - PostgreSQL database with real-time features
 - **@supabase/supabase-js** - JavaScript client library
 - **Next.js API Routes** - Serverless API endpoints
+
+### External Integrations
+- **Google Maps Embed API** - Interactive location mapping
+- **HTML5 Canvas** - Dynamic image generation
+- **Vercel Analytics** - Performance monitoring
 
 ### Deployment
 - **Netlify** - Static site hosting
@@ -235,11 +253,15 @@ The application is optimized for:
 ## 🌟 Highlighted Features
 
 1. **Real-time Canvas Generation** - Dynamic invitation creation with HTML5 Canvas
-2. **Multi-language Support** - Complete multilingual support
-3. **Interactive Slideshow** - Engaging image experience
-4. **Form Validation** - Smart input data validation
-5. **Download Functionality** - Save invitation to device
-6. **Modern UI/UX** - Contemporary and user-friendly interface
+2. **Live Invitation Preview** - 850px wide preview immediately after confirmation
+3. **Google Maps Integration** - Interactive location mapping with event address
+4. **Professional Contact Section** - Complete contact information with social links
+5. **Multi-language Support** - Complete Vietnamese and English translations
+6. **Interactive Slideshow** - Engaging background image experience
+7. **Smart Form Validation** - Real-time input validation with error handling
+8. **Streamlined UX** - Clean confirmation flow without cluttered information
+9. **Responsive Design** - Optimized for desktop, tablet, and mobile devices
+10. **Modern UI/UX** - Contemporary design with smooth animations
 
 ## 🤝 Contributing
 
