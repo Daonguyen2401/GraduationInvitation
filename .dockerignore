@@ -37,6 +37,7 @@ Thumbs.db
 # Documentation
 README.md
 *.md
+!email-template.md
 
 # Test files
 test-*.js

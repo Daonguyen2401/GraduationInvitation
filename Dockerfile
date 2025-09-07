@@ -60,6 +60,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/next.config.mjs ./
+COPY --from=builder /app/email-template.md ./email-template.md
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs
