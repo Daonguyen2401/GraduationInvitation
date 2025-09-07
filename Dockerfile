@@ -14,7 +14,15 @@ RUN apk add --no-cache \
     pixman-dev \
     pangomm-dev \
     libjpeg-turbo-dev \
-    freetype-dev
+    freetype-dev \
+    fontconfig \
+    ttf-dejavu \
+    noto-fonts \
+    noto-fonts-cjk \
+    noto-fonts-emoji
+
+# Rebuild font cache for text rendering (canvas/pango)
+RUN fc-cache -f -v
 
 # Set working directory
 WORKDIR /app

@@ -130,6 +130,10 @@ class EmailService {
       const subject = this.replaceTemplateVariables(template.subject, data)
       const textContent = this.replaceTemplateVariables(template.text, data)
 
+      // Normalize attachment path to ensure it points inside /public even if imagePath starts with '/'
+      const normalizedImagePath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath
+      const absoluteAttachmentPath = path.join(process.cwd(), 'public', normalizedImagePath)
+
       const mailOptions = {
         from: `"Lễ Tốt Nghiệp Class of 2025" <${process.env.EMAIL_USER}>`,
         to: data.email,
@@ -138,7 +142,7 @@ class EmailService {
         attachments: [
           {
             filename: `thiep-moi-${data.fullName.replace(/\s+/g, '-')}.jpg`,
-            path: path.join(process.cwd(), 'public', imagePath),
+            path: absoluteAttachmentPath,
             contentType: 'image/jpeg'
           }
         ]
