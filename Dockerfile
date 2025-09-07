@@ -16,10 +16,7 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     freetype-dev \
     fontconfig \
-    ttf-dejavu \
-    noto-fonts \
-    noto-fonts-cjk \
-    noto-fonts-emoji
+    ttf-dejavu
 
 # Rebuild font cache for text rendering (canvas/pango)
 RUN fc-cache -f -v
