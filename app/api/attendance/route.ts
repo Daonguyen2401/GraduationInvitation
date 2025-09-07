@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import EmailService from '@/lib/email-service'
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,6 +34,48 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Kiểm tra xem email đã tồn tại trong database chưa
+    const { data: existingData, error: checkError } = await supabase
+      .from('attendance_confirmations')
+      .select('id, email')
+      .eq('email', email)
+      .single()
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      // PGRST116 là lỗi "not found", không phải lỗi thực sự
+      console.error('Error checking existing email:', checkError)
+      return NextResponse.json(
+        { error: 'Failed to check existing registration' },
+        { status: 500 }
+      )
+    }
+
+    // Nếu email đã tồn tại, bỏ qua hoàn toàn
+    if (existingData) {
+      return NextResponse.json(
+        { 
+          success: true, 
+          data: existingData,
+          message: 'Attendance confirmation saved successfully'
+        },
+        { status: 200 }
+      )
+    }
+
+    // Gửi email thư mời trước khi lưu vào database
+    const emailService = new EmailService()
+    const emailSent = await emailService.sendInvitationEmail({
+      fullName,
+      nickname,
+      email,
+      phone,
+      attendanceTime
+    })
+
+    if (!emailSent) {
+      console.warn('Failed to send email, but continuing with database save')
+    }
+
     // Insert data into Supabase
     const { data, error } = await supabase
       .from('attendance_confirmations')
@@ -59,7 +102,10 @@ export async function POST(request: NextRequest) {
       { 
         success: true, 
         data: data[0],
-        message: 'Attendance confirmation saved successfully' 
+        message: emailSent 
+          ? 'Attendance confirmation saved and invitation email sent successfully' 
+          : 'Attendance confirmation saved but failed to send email',
+        emailSent: emailSent
       },
       { status: 201 }
     )
