@@ -9,7 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  output: 'export',
+  // Remove static export for Railway deployment
+  // output: 'export',
   trailingSlash: true,
 }
 
