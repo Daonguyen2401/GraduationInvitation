@@ -37,25 +37,36 @@ export async function POST(request: NextRequest) {
     // Kiểm tra xem email đã tồn tại trong database chưa
     const { data: existingData, error: checkError } = await supabase
       .from('attendance_confirmations')
-      .select('id, email')
-      .eq('email', email)
-      .single()
+      .select('id, email, attendance_time')
+      .eq('email', email.toLowerCase().trim())
 
-    if (checkError && checkError.code !== 'PGRST116') {
-      // PGRST116 là lỗi "not found", không phải lỗi thực sự
-      console.error('Error checking existing email:', checkError)
-      return NextResponse.json(
-        { error: 'Failed to check existing registration' },
-        { status: 500 }
-      )
+    console.log('Checking email:', email.toLowerCase().trim())
+    console.log('Existing data:', existingData)
+    console.log('Check error:', checkError)
+
+    let shouldSendEmail = true
+    let existingRecord = null
+
+    // Nếu email đã tồn tại
+    if (existingData && existingData.length > 0) {
+      existingRecord = existingData[0]
+      
+      // Kiểm tra thời gian tham dự có thay đổi không
+      if (existingRecord.attendance_time === attendanceTime) {
+        console.log('Email exists with same time, skipping email send')
+        shouldSendEmail = false
+      } else {
+        console.log('Email exists but time changed, will send email and update')
+        shouldSendEmail = true
+      }
     }
 
-    // Nếu email đã tồn tại, bỏ qua hoàn toàn
-    if (existingData) {
+    // Nếu không cần gửi email (email tồn tại và thời gian giống nhau)
+    if (!shouldSendEmail) {
       return NextResponse.json(
         { 
           success: true, 
-          data: existingData,
+          data: existingRecord,
           message: 'Attendance confirmation saved successfully'
         },
         { status: 200 }
@@ -76,36 +87,66 @@ export async function POST(request: NextRequest) {
       console.warn('Failed to send email, but continuing with database save')
     }
 
-    // Insert data into Supabase
-    const { data, error } = await supabase
-      .from('attendance_confirmations')
-      .insert([
-        {
-          full_name: fullName,
-          nickname: nickname || null,
-          phone: phone,
-          email: email,
-          attendance_time: attendanceTime,
-        },
-      ])
-      .select()
+    let resultData = null
+    let resultError = null
 
-    if (error) {
-      console.error('Supabase error:', error)
+    // Nếu email đã tồn tại, update thời gian tham dự
+    if (existingRecord) {
+      console.log('Updating existing record with new attendance time')
+      const { data, error } = await supabase
+        .from('attendance_confirmations')
+        .update({
+          attendance_time: attendanceTime,
+          updated_at: new Date().toISOString()
+        })
+        .eq('email', email.toLowerCase().trim())
+        .select()
+
+      resultData = data
+      resultError = error
+    } else {
+      // Nếu email chưa tồn tại, insert mới
+      console.log('Inserting new record')
+      const { data, error } = await supabase
+        .from('attendance_confirmations')
+        .insert([
+          {
+            full_name: fullName,
+            nickname: nickname || null,
+            phone: phone,
+            email: email.toLowerCase().trim(), // Normalize email
+            attendance_time: attendanceTime,
+          },
+        ])
+        .select()
+
+      resultData = data
+      resultError = error
+    }
+
+    if (resultError) {
+      console.error('Supabase error:', resultError)
       return NextResponse.json(
         { error: 'Failed to save attendance confirmation' },
         { status: 500 }
       )
     }
 
+    const message = existingRecord 
+      ? (emailSent 
+          ? 'Attendance time updated and invitation email sent successfully' 
+          : 'Attendance time updated but failed to send email')
+      : (emailSent 
+          ? 'Attendance confirmation saved and invitation email sent successfully' 
+          : 'Attendance confirmation saved but failed to send email')
+
     return NextResponse.json(
       { 
         success: true, 
-        data: data[0],
-        message: emailSent 
-          ? 'Attendance confirmation saved and invitation email sent successfully' 
-          : 'Attendance confirmation saved but failed to send email',
-        emailSent: emailSent
+        data: resultData[0],
+        message: message,
+        emailSent: emailSent,
+        isUpdate: !!existingRecord
       },
       { status: 201 }
     )
