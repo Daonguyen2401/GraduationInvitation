@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface BackgroundImage {
@@ -9,7 +9,7 @@ interface BackgroundImage {
   title?: string
 }
 
-interface MultiImageCarouselProps {
+export interface MultiImageCarouselProps {
   images: BackgroundImage[]
   autoPlay?: boolean
   autoPlayInterval?: number
@@ -18,14 +18,23 @@ interface MultiImageCarouselProps {
   className?: string
 }
 
-export function MultiImageCarousel({
+export interface MultiImageCarouselHandle {
+  next: () => void
+  prev: () => void
+  goTo: (index: number) => void
+}
+
+export const MultiImageCarousel = forwardRef<MultiImageCarouselHandle, MultiImageCarouselProps>(function MultiImageCarousel(
+  {
   images,
   autoPlay = true,
   autoPlayInterval = 5000,
   showControls = true,
   showDots = true,
   className = "",
-}: MultiImageCarouselProps) {
+  }: MultiImageCarouselProps,
+  ref
+) {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -51,6 +60,12 @@ export function MultiImageCarousel({
     setCurrentSlide(index)
   }
 
+  useImperativeHandle(ref, () => ({
+    next: nextSlide,
+    prev: prevSlide,
+    goTo: goToSlide,
+  }), [images.length])
+
   if (images.length === 0) return null
 
   // Get the two side images to display (left and right) while keeping background full-screen
@@ -75,7 +90,7 @@ export function MultiImageCarousel({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Full Screen Background Images */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 pointer-events-none">
         {images.map((image, index) => (
           <div
             key={index}
@@ -134,7 +149,7 @@ export function MultiImageCarousel({
               e.stopPropagation()
               prevSlide()
             }}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 rounded-full w-12 h-12 backdrop-blur-sm border border-white/20 z-50 flex items-center justify-center transition-all duration-200 hover:scale-105"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 rounded-full w-12 h-12 backdrop-blur-sm border border-white/20 z-50 flex items-center justify-center transition-all duration-200 hover:scale-105 pointer-events-auto"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -144,7 +159,7 @@ export function MultiImageCarousel({
               e.stopPropagation()
               nextSlide()
             }}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 rounded-full w-12 h-12 backdrop-blur-sm border border-white/20 z-50 flex items-center justify-center transition-all duration-200 hover:scale-105"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:bg-white/20 rounded-full w-12 h-12 backdrop-blur-sm border border-white/20 z-50 flex items-center justify-center transition-all duration-200 hover:scale-105 pointer-events-auto"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -153,7 +168,7 @@ export function MultiImageCarousel({
 
       {/* Dots Indicator */}
       {showDots && images.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-50">
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-50 pointer-events-auto">
           {images.map((_, index) => (
             <button
               key={index}
@@ -174,4 +189,4 @@ export function MultiImageCarousel({
       )}
     </div>
   )
-}
+})

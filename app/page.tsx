@@ -2,14 +2,14 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { GraduationCap, Download, Globe, ChevronLeft } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { MultiImageCarousel } from "@/components/multi-image-carousel"
+import { MultiImageCarousel, type MultiImageCarouselHandle } from "@/components/multi-image-carousel"
 import { getBackgroundImages } from "@/lib/image-utils"
 
 interface FormData {
@@ -401,6 +401,8 @@ export default function GraduationInvitation() {
     })
   }
 
+  const carouselRef = useRef<MultiImageCarouselHandle | null>(null)
+
   return (
     <div className="min-h-screen bg-background">
       {/* Language Toggle Button */}
@@ -418,10 +420,11 @@ export default function GraduationInvitation() {
 
       {/* Full Screen Multi-Image Carousel */}
       <MultiImageCarousel
+        ref={carouselRef as any}
         images={backgroundImages}
         autoPlay={true}
         autoPlayInterval={5000}
-        showControls={true}
+        showControls={false}
         showDots={true}
         className="fixed inset-0 z-0"
       />
@@ -432,6 +435,23 @@ export default function GraduationInvitation() {
       <div className="fixed top-4 left-4 w-16 h-16 bg-white/5 rounded-full blur-xl z-10"></div>
       <div className="fixed bottom-4 right-4 w-12 h-12 bg-accent/20 rounded-full blur-lg z-10"></div>
       
+      {/* Page-level Carousel Controls */}
+      <div className="fixed inset-y-0 left-0 right-0 pointer-events-none z-50">
+        <button
+          onClick={() => carouselRef?.current?.prev && carouselRef.current.prev()}
+          className="pointer-events-auto absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 text-gray-900 hover:bg-white rounded-full w-12 h-12 backdrop-blur-md border border-white/70 shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button
+          onClick={() => carouselRef?.current?.next && carouselRef.current.next()}
+          className="pointer-events-auto absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 text-gray-900 hover:bg-white rounded-full w-12 h-12 backdrop-blur-md border border-white/70 shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105"
+        >
+          {/* using rotate-180 ChevronLeft as right arrow substitute not needed since ChevronRight exists elsewhere, but keep consistent icons */}
+          <ChevronLeft className="w-6 h-6 rotate-180" />
+        </button>
+      </div>
+
       {/* Scroll Down Button */}
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30">
         <Button
