@@ -9,9 +9,12 @@ export interface BackgroundImage {
 // Static list of images - this will be updated when you add new images to /public/slideshow
 // The system will automatically detect all images in the slideshow directory
 const SLIDESHOW_IMAGES = [
-  "diploma-and-cap.jpg",
-  "graduation-ceremony-crowd.jpg",
-  "university-campus-with-graduation-decorations.jpg",
+  "c2_huynh.jpg",
+  "c2_oc.jpg",
+  "c3_binhnminh.jpg",
+  "c3_ca.jpg",
+  "c3_hp.jpg",
+  "c3_nl.jpg",
 ]
 
 // Function to get all background images

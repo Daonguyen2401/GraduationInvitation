@@ -33,9 +33,9 @@ const translations = {
     shareMemory: "Hãy cùng chia sẻ khoảnh khắc đáng nhớ này với tôi!",
     graduationOf: "Lễ tốt nghiệp của Trần Đức Đào Nguyên",
     graduationTitle: "Lễ tốt nghiệp của Trần Đức Đào Nguyên",
-    pleaseJoin: "VUI LÒNG THAM GIA",
+    pleaseJoin: "THƯ MỜI THAM GIA",
     graduationParty: "LỄ TỐT NGHIỆP",
-    inHonorOf: "VINH DANH",
+    inHonorOf: "Tân cử nhân",
     graduateName: "TRẦN ĐỨC ĐÀO NGUYÊN",
     university: "TRƯỜNG ĐẠI HỌC BÁCH KHOA HÀ NỘI",
     sunday: "CHỦ NHẬT",
@@ -47,8 +47,8 @@ const translations = {
     pleaseConfirm: "VUI LÒNG XÁC NHẬN THAM DỰ BÊN DƯỚI",
     confirmAttendance: "Xác nhận tham dự",
     fillInfo: "Vui lòng điền thông tin để nhận thiệp mời cá nhân",
-    gratitudeQuote: "Cảm ơn gia đình, thầy cô và bạn bè đã đồng hành cùng tôi trong suốt chặng đường học tập. Nhờ có sự ủng hộ và động viên của mọi người, tôi mới có thể đạt được thành tựu ngày hôm nay. Tôi rất mong được chia sẻ khoảnh khắc đặc biệt này cùng tất cả mọi người!",
-    gratitudeQuoteEn: "Thank you to my family, teachers, and friends who have accompanied me throughout my learning journey. Thanks to everyone's support and encouragement, I was able to achieve today's success. I would be honored to share this special moment with all of you!",
+    gratitudeQuote: "Xin được gửi lời cảm ơn chân thành đến gia đĩnh, và những ngươì bạn của con/mình - những người đã cho con/mình cơ hội được trưởng thành, luôn đồng hành và cứu con/mình khỏi những khó khăn đã trải qua. Nếu không có mọi người, con/mình không thể tới được ngày hôm nay. Con/mình rất mong được chia sẻ khoảnh khắc tốt nghiệp cùng mọi người.",
+    gratitudeQuoteEn: "My heartfelt thanks to my family and friends — those who gave me the chance to grow, stood by me, and helped me through the hardest moments. Without you, I wouldn’t be here today. I would be honored to share this graduation moment with you.",
     fullName: "Họ và tên",
     fullNamePlaceholder: "Nhập họ và tên đầy đủ",
     nickname: "Tên tôi thường gọi bạn",
@@ -75,7 +75,7 @@ const translations = {
     contactPhone: "0906605877",
     contactEmail: "tranducdaonguyen@gmail.com",
     contactFacebook: "Facebook: Trần Đức Đào Nguyên",
-    copyright: "© 2025 Class of 2025 Graduation Celebration. Made with ❤️",
+    copyright: "© Made by Daonguyen and Vibecoding AI. Made with ❤️",
     fillAllFields: "Vui lòng điền đầy đủ thông tin",
     requiredFields: "Họ tên, email và giờ tham dự là bắt buộc.",
     confirmSuccess: "Xác nhận thành công!",
@@ -135,7 +135,7 @@ const translations = {
     contactPhone: "0906605877",
     contactEmail: "tranducdaonguyen@gmail.com",
     contactFacebook: "Facebook: Tran Duc Dao Nguyen",
-    copyright: "© 2025 Class of 2025 Graduation Celebration. Made with ❤️",
+    copyright: "© Made by Daonguyen and Vibecoding AI. Made with ❤️",
     fillAllFields: "Please fill in all required information",
     requiredFields: "Full name, email and attendance time are required.",
     confirmSuccess: "Confirmation Successful!",
@@ -426,20 +426,7 @@ export default function GraduationInvitation() {
         className="fixed inset-0 z-0"
       />
       
-      {/* Main Content Overlay */}
-      <div className="fixed inset-0 flex items-center justify-center z-20">
-        <div className="max-w-4xl mx-auto text-center px-4">
-          {/* Main Graduation Text */}
-          <div className="flex flex-col items-center justify-center">
-            <h1 className="text-4xl font-bold text-white text-center drop-shadow-2xl mb-4">
-              {t.graduationOf}
-            </h1>
-            <p className="text-xl text-white/90 drop-shadow-lg max-w-2xl">
-              {t.shareMemory}
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Main Content Overlay removed per request */}
       
       {/* Decorative Elements */}
       <div className="fixed top-4 left-4 w-16 h-16 bg-white/5 rounded-full blur-xl z-10"></div>
@@ -722,7 +709,17 @@ export default function GraduationInvitation() {
             {/* Google Maps - Right Side */}
             <div className="text-left">
               <h4 className="text-xl font-semibold mb-4">
-                {language === "vi" ? "Vị trí sự kiện" : "Event Location"}
+                {language === "vi" ? (
+                  <>
+                    Vị trí sự kiện: {" "}
+                    <a href="https://hustmap.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">hustmap.com</a>
+                  </>
+                ) : (
+                  <>
+                    Event Location: {" "}
+                    <a href="https://hustmap.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-accent">hustmap.com</a>
+                  </>
+                )}
               </h4>
               <div className="w-full h-64 rounded-lg overflow-hidden">
                 <iframe
