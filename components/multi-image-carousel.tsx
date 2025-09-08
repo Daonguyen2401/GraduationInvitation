@@ -53,22 +53,20 @@ export function MultiImageCarousel({
 
   if (images.length === 0) return null
 
-  // Get the three images to display
-  const getDisplayImages = () => {
+  // Get the two side images to display (left and right) while keeping background full-screen
+  const getSideImages = () => {
     if (images.length === 1) {
-      return [images[0], images[0], images[0]]
+      return [images[0], images[0]]
     }
     if (images.length === 2) {
-      return [images[1], images[0], images[1]]
+      return [images[0], images[1]]
     }
-    
     const prevIndex = (currentSlide - 1 + images.length) % images.length
     const nextIndex = (currentSlide + 1) % images.length
-    
-    return [images[prevIndex], images[currentSlide], images[nextIndex]]
+    return [images[prevIndex], images[nextIndex]]
   }
 
-  const displayImages = getDisplayImages()
+  const sideImages = getSideImages()
 
   return (
     <div
@@ -95,48 +93,30 @@ export function MultiImageCarousel({
         ))}
       </div>
 
-      {/* Three Image Overlay Layout */}
-      <div className="absolute inset-0 flex items-center justify-center z-10">
-        <div className="flex items-center justify-center gap-8 w-full h-full px-12">
-          {/* Previous Image */}
-          <div className="w-1/4 h-3/4 opacity-70 transform scale-90 transition-all duration-500 hover:scale-95">
+      {/* Two Side Images Overlay Layout (leave center area empty for invitation card) */}
+      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+        <div className="flex items-center justify-between w-full h-full px-12 gap-8">
+          {/* Left Image */}
+          <div className="w-1/3 h-3/4 opacity-80 transform scale-95 transition-all duration-500">
             <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl">
               <img
-                src={displayImages[0].src}
-                alt={displayImages[0].alt}
+                src={sideImages[0].src}
+                alt={sideImages[0].alt}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-black/30"></div>
             </div>
           </div>
 
-          {/* Main Image (Center) */}
-          <div className="w-1/2 h-4/5 opacity-100 transform scale-100 transition-all duration-500 z-20">
-            <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src={displayImages[1].src}
-                alt={displayImages[1].alt}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/20"></div>
-              
-              {/* Main Image Title */}
-              {displayImages[1].title && (
-                <div className="absolute bottom-8 left-8 right-8 text-center">
-                  <h3 className="text-white text-3xl font-bold drop-shadow-2xl">
-                    {displayImages[1].title}
-                  </h3>
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Center Space (kept empty for the main invitation content) */}
+          <div className="flex-1 h-4/5"></div>
 
-          {/* Next Image */}
-          <div className="w-1/4 h-3/4 opacity-70 transform scale-90 transition-all duration-500 hover:scale-95">
+          {/* Right Image */}
+          <div className="w-1/3 h-3/4 opacity-80 transform scale-95 transition-all duration-500">
             <div className="relative w-full h-full rounded-xl overflow-hidden shadow-2xl">
               <img
-                src={displayImages[2].src}
-                alt={displayImages[2].alt}
+                src={sideImages[1].src}
+                alt={sideImages[1].alt}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-black/30"></div>
