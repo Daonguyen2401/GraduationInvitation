@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { GraduationCap, Download, Globe, ChevronLeft } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
@@ -52,7 +53,7 @@ const translations = {
     fullName: "Họ và tên",
     fullNamePlaceholder: "Nhập họ và tên đầy đủ",
     nickname: "Tên tôi thường gọi bạn",
-    nicknamePlaceholder: "Tên thân thiết (không bắt buộc)",
+    nicknamePlaceholder: "Nickname (không bắt buộc)",
     phone: "Số điện thoại",
     phonePlaceholder: "Nhập số điện thoại",
     email: "Email",
@@ -167,6 +168,7 @@ const validateEmail = (email: string): boolean => {
 
 export default function GraduationInvitation() {
   const [language, setLanguage] = useState<"vi" | "en">("vi")
+  const [showGratitudeImage, setShowGratitudeImage] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     nickname: "",
@@ -469,19 +471,43 @@ export default function GraduationInvitation() {
       {/* Gratitude Quote Section */}
       <section className="py-8 px-4 bg-muted/30 relative z-30">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20">
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20 relative">
+            {/* Top-right toggle control */}
+            <div className="absolute top-3 right-3 z-10">
+              <div className="flex items-center gap-1 bg-transparent px-2 py-1">
+                <span className="text-[10px] uppercase text-gray-500">Quote</span>
+                <Switch
+                  checked={showGratitudeImage}
+                  onCheckedChange={setShowGratitudeImage}
+                  className="h-5 w-10 data-[state=checked]:bg-gray-800 data-[state=unchecked]:bg-gray-300"
+                />
+                <span className="text-[10px] uppercase text-gray-500">hust</span>
+              </div>
+            </div>
             <div className="mb-4">
               <GraduationCap className="w-12 h-12 mx-auto text-primary mb-2" />
               <h2 className="text-3xl font-bold text-primary mb-4">
                 {language === "vi" ? "Lời Cảm Ơn" : "Words of Gratitude"}
               </h2>
             </div>
-            <blockquote className="text-xl leading-relaxed text-gray-700 italic mb-4">
-              "{language === "vi" ? t.gratitudeQuote : t.gratitudeQuoteEn}"
-            </blockquote>
-              <div className="text-sm text-gray-500">
-                {language === "vi" ? "— Trần Đức Đào Nguyên —" : "— Tran Duc Dao Nguyen —"}
+            {showGratitudeImage ? (
+              <div className="mt-2">
+                <img
+                  src="/luubut.jpg"
+                  alt={language === "vi" ? "Ảnh lưu bút" : "Guestbook image"}
+                  className="mx-auto rounded-2xl shadow-lg w-full max-w-4xl max-h-[32rem] object-contain"
+                />
               </div>
+            ) : (
+              <>
+                <blockquote className="text-xl leading-relaxed text-gray-700 italic mb-4">
+                  "{language === "vi" ? t.gratitudeQuote : t.gratitudeQuoteEn}"
+                </blockquote>
+                <div className="text-sm text-gray-500">
+                  {language === "vi" ? "— Trần Đức Đào Nguyên —" : "— Tran Duc Dao Nguyen —"}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
